@@ -35,7 +35,7 @@ auto main(int argc, char **argv) noexcept -> int {
   // TODO(carl): time
   const auto start_time = std::chrono::system_clock::now();
 
-  const auto dx = static_cast<float>((b - a) / n);
+  const auto dx = (b - a) / n;
 
   MPI_Init(&argc, &argv);
 
@@ -78,7 +78,7 @@ auto main(int argc, char **argv) noexcept -> int {
 
   // sum up local results on rank 0
   auto total_result = 0.0F;
-  MPI_Reduce(&local_result, &total_result, 1, MPI_DOUBLE, MPI_SUM, 0,
+  MPI_Reduce(&local_result, &total_result, 1, MPI_FLOAT, MPI_SUM, 0,
              MPI_COMM_WORLD);
 
   if (rank == 0) {
