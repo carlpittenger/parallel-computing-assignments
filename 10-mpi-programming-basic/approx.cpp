@@ -13,7 +13,8 @@ auto main(const int argc, const char *const *const argv) noexcept -> int {
   // const auto a = std::atof(argv[1]);
   // const auto b = std::atof(argv[2]);
 
-  float a, b;
+  float a;
+  float b;
 
   if (std::sscanf(argv[1], "%f", &a) != 1) {
     // return EXIT_FAILURE;

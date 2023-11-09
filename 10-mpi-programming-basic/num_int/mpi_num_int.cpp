@@ -26,13 +26,16 @@ auto main(int argc, char **argv) noexcept -> int {
     return -1;
   }
 
-  const auto function_id = atoi(argv[1]);
-  const auto a = atof(argv[2]);
-  const auto b = atof(argv[3]);
-  const auto n = atoi(argv[4]);
-  const auto intensity = atoi(argv[5]);
+  const auto function_id = std::atoi(argv[1]);
+  const auto a = std::atof(argv[2]);
+  const auto b = std::atof(argv[3]);
+  const auto n = std::atoi(argv[4]);
+  const auto intensity = std::atoi(argv[5]);
 
-  const auto dx = double{(b - a) / n};
+  // TODO(carl): time
+  const auto start_time = std::chrono::system_clock::now();
+
+  const auto dx = static_cast<float>((b - a) / n);
 
   MPI_Init(&argc, &argv);
 
@@ -48,11 +51,11 @@ auto main(int argc, char **argv) noexcept -> int {
   const auto start = rank * local_n + (rank < extra ? rank : extra);
   const auto end = start + local_n + (rank < extra);
 
-  auto local_result = 0.0;
+  auto local_result = 0.0F;
 
   for (auto i = start; i < end; ++i) {
-    const auto x = dx * i + a;
-    auto result = 0.0;
+    const auto x = static_cast<float>(dx * i + a);
+    auto result = 0.0F;
 
     switch (function_id) {
     case 1:
@@ -64,25 +67,31 @@ auto main(int argc, char **argv) noexcept -> int {
     case 3:
       result = f3(x, intensity);
       break;
-    case 4:
-      result = f4(x, intensity);
-      break;
+
+      // case 4:
     default:
-      break;
+      result = f4(x, intensity);
     }
 
     local_result += result;
   }
 
   // sum up local results on rank 0
-  auto total_result = 0.0;
+  auto total_result = 0.0F;
   MPI_Reduce(&local_result, &total_result, 1, MPI_DOUBLE, MPI_SUM, 0,
              MPI_COMM_WORLD);
 
   if (rank == 0) {
     // print final result on rank 0
+    // TODO(carl): or perhaps multiply dx further above?
     std::cout << "Result: " << total_result * dx << '\n';
   }
 
   MPI_Finalize();
+
+  const auto end_time = std::chrono::system_clock::now();
+
+  const auto elapsed_seconds =
+      std::chrono::duration<double>{end_time - start_time};
+  std::cerr << elapsed_seconds.count() << '\n';
 }
