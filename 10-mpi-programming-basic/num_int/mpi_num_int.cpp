@@ -73,7 +73,7 @@ auto main(int argc, char **argv) noexcept -> int {
       result = f4(x, intensity);
     }
 
-    local_result += result;
+    local_result += dx * result;
   }
 
   // sum up local results on rank 0
@@ -84,7 +84,7 @@ auto main(int argc, char **argv) noexcept -> int {
   if (rank == 0) {
     // print final result on rank 0
     // TODO(carl): or perhaps multiply dx further above?
-    std::cout << "Result: " << total_result * dx << '\n';
+    std::cout << "Result: " << total_result << '\n';
   }
 
   MPI_Finalize();
