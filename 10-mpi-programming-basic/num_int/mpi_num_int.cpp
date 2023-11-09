@@ -32,12 +32,11 @@ auto main(int argc, char **argv) noexcept -> int {
   const auto n = std::atoi(argv[4]);
   const auto intensity = std::atoi(argv[5]);
 
-  // TODO(carl): time
-  const auto start_time = std::chrono::system_clock::now();
-
   const auto dx = (b - a) / n;
 
   MPI_Init(&argc, &argv);
+
+  const auto start_time = std::chrono::system_clock::now();
 
   int rank;
   int size;
@@ -86,9 +85,9 @@ auto main(int argc, char **argv) noexcept -> int {
     std::cout << dx * total_result << '\n';
   }
 
-  MPI_Finalize();
-
   const auto end_time = std::chrono::system_clock::now();
+
+  MPI_Finalize();
 
   const auto elapsed_seconds =
       std::chrono::duration<double>{end_time - start_time};
