@@ -84,7 +84,7 @@ auto main(int argc, char **argv) noexcept -> int {
   if (rank == 0) {
     // print final result on rank 0
     // TODO(carl): or perhaps multiply dx further above?
-    std::cout << "Result: " << total_result << '\n';
+    std::cout << "Result: " << std::round(total_result) << '\n';
   }
 
   MPI_Finalize();
